@@ -16,7 +16,7 @@ class Bot_Controller
 {
     public:
     // main() will need to instantiate a ROS nodehandle, then pass it to the constructor
-    Bot_Controller(ros::NodeHandle* nodehandle);
+    Bot_Controller(ros::NodeHandle* nodehandle, const std::string& robot_name);
     void publish_velocities(const geometry_msgs::Twist& msg);
     void drive_straight(double distance, bool direction);
     void rotate(double angle_to_rotate, bool direction, double final_angle);
@@ -33,7 +33,9 @@ class Bot_Controller
     ros::Subscriber m_pose_subscriber;
     ros::Subscriber m_scan_subscriber;
     ros::Publisher m_velocity_publisher;
-    ros::Publisher m_bot_msgs_publisher;
+    ros::Publisher m_bot_status_publisher;
+
+    std::string m_robot_name;
 
     double m_kv;//gain for linear velocity
     double m_kh;//gain for angular velocity
@@ -46,7 +48,6 @@ class Bot_Controller
     double m_roll; //rad
     double m_pitch;//rad
     double m_yaw;  //rad
-    std::string m_robot_name;
     void m_pose_callback(const nav_msgs::Odometry::ConstPtr& msg);  // prototype for callback of example subscriber
     void m_scan_callback(const sensor_msgs::LaserScan::ConstPtr& msg);  // prototype for callback of example subscriber
     void m_initialize_subscribers();

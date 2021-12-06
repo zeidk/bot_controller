@@ -4,15 +4,16 @@
 #include <tf/transform_datatypes.h>
 #include <cmath>
 
-Bot_Controller::Bot_Controller(ros::NodeHandle* nodehandle) :
+Bot_Controller::Bot_Controller(ros::NodeHandle* nodehandle, const std::string& robot_name) :
+    m_robot_name{robot_name},
     m_nh{ *nodehandle },
     m_kv{ 0.1 },
     m_kh{ 0.1 },
     m_parent_frame{ "odom" },
     m_child_frame{ "base_footprint" },
     m_location{ 0,0 },
-    m_linear_speed{ 0.3 },
-    m_angular_speed{ 0.5 },
+    m_linear_speed{ 0.7 },
+    m_angular_speed{ 0.6 },
     m_roll{ 0 },
     m_pitch{ 0 },
     m_yaw{ 0 }
@@ -40,14 +41,14 @@ double Bot_Controller::m_normalize_angle(double angle)
 void Bot_Controller::m_initialize_publishers() {
     // ROS_INFO("Initializing Publishers");
     m_velocity_publisher = m_nh.advertise<geometry_msgs::Twist>("/cmd_vel", 100);
-    m_bot_msgs_publisher = m_nh.advertise<bot_msgs::BotStatus>("/robot_status", 100);
+    m_bot_status_publisher =m_nh.advertise<bot_msgs::BotStatus>("/robot_status", 100);
     //add more publishers here as needed
 }
 
 void Bot_Controller::m_initialize_subscribers() {
     // ROS_INFO("Initializing Subscribers");
     m_pose_subscriber = m_nh.subscribe("/odom", 1000, &Bot_Controller::m_pose_callback, this);
-    m_scan_subscriber = m_nh.subscribe("/scan", 1000, &Bot_Controller::m_scan_callback, this);
+    // m_scan_subscriber = m_nh.subscribe("/scan", 1000, &Bot_Controller::m_scan_callback, this);
     //add more subscribers as needed
 }
 
@@ -57,10 +58,10 @@ double Bot_Controller::convert_rad_to_deg(double angle) {
     return (angle * M_PI / 180.0);
 }
 
-void Bot_Controller::m_pose_callback(const nav_msgs::Odometry::ConstPtr& msg) {
-    m_location.first = msg->pose.pose.position.x;
-    m_location.second = msg->pose.pose.position.y;
-    m_orientation = msg->pose.pose.orientation;
+void Bot_Controller::m_pose_callback(const nav_msgs::Odometry::ConstPtr& odom_msg) {
+    m_location.first = odom_msg->pose.pose.position.x;
+    m_location.second = odom_msg->pose.pose.position.y;
+    m_orientation = odom_msg->pose.pose.orientation;
     // compute_yaw();
 
     ROS_INFO_STREAM("-------------------------");
@@ -71,26 +72,12 @@ void Bot_Controller::m_pose_callback(const nav_msgs::Odometry::ConstPtr& msg) {
         << m_orientation.y << ","
         << m_orientation.z << "," << m_orientation.w << "]");
 
-    //building bot_msgs/BotStatus message  
-    geometry_msgs::Twist twist_msg;
-    twist_msg = msg->twist.twist;
-    geometry_msgs::Pose pose_msg;
-    pose_msg = msg->pose.pose;
-    std::string robot_name;
-    m_nh.getParam("robot_name", robot_name);
-
     bot_msgs::BotStatus bot_status_msg;
-    bot_status_msg.pose_data = pose_msg;
-    bot_status_msg.twist_data = twist_msg;
-    bot_status_msg.robot_name = robot_name;
+    bot_status_msg.pose_data=odom_msg->pose.pose;
+    bot_status_msg.twist_data=odom_msg->twist.twist;
+    bot_status_msg.robot_name=m_robot_name;
 
-    m_bot_msgs_publisher.publish(bot_status_msg);
-
-
-
-
-
-
+    m_bot_status_publisher.publish(bot_status_msg);
 }
 
 
