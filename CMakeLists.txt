@@ -12,7 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   nav_msgs
   roscpp
   sensor_msgs
-  bot_msgs
+  # bot_msgs
   sensor_msgs
   image_transport
   cv_bridge
@@ -141,10 +141,10 @@ include
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable( ${PROJECT_NAME}_node src/main.cpp src/bot_controller.cpp)
-add_executable(service_server_node src/bot_service_server.cpp)
-add_executable(service_client_node src/bot_service_client.cpp)
-add_executable(action_server_node src/bot_action_server.cpp)
-add_executable(action_client_node src/bot_action_client.cpp)
+# add_executable(service_server_node src/bot_service_server.cpp)
+# add_executable(service_client_node src/bot_service_client.cpp)
+# add_executable(action_server_node src/bot_action_server.cpp)
+# add_executable(action_client_node src/bot_action_client.cpp)
                                               
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -160,21 +160,21 @@ add_executable(action_client_node src/bot_action_client.cpp)
 target_link_libraries(${PROJECT_NAME}_node
   ${catkin_LIBRARIES}
 )
-target_link_libraries(service_server_node
-  ${catkin_LIBRARIES}
-)
+# target_link_libraries(service_server_node
+#   ${catkin_LIBRARIES}
+# )
 
-target_link_libraries(service_client_node
-  ${catkin_LIBRARIES}
-)
+# target_link_libraries(service_client_node
+#   ${catkin_LIBRARIES}
+# )
 
-target_link_libraries(action_server_node
-  ${catkin_LIBRARIES}
-)
+# target_link_libraries(action_server_node
+#   ${catkin_LIBRARIES}
+# )
 
-target_link_libraries(action_client_node
-  ${catkin_LIBRARIES}
-)
+# target_link_libraries(action_client_node
+#   ${catkin_LIBRARIES}
+# )
 #############
 ## Install ##
 #############

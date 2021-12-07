@@ -1,5 +1,5 @@
 #include "bot_controller.h"
-#include "bot_msgs/BotStatus.h"
+// #include "bot_msgs/BotStatus.h"
 #include <geometry_msgs/Quaternion.h>
 #include <tf/transform_datatypes.h>
 #include <cmath>
@@ -42,8 +42,6 @@ double Bot_Controller::m_normalize_angle(double angle)
 void Bot_Controller::m_initialize_publishers() {
     ROS_INFO("Initializing Publishers");
     m_velocity_publisher = m_nh.advertise<geometry_msgs::Twist>("/cmd_vel", 100);
-    m_bot_status_publisher =m_nh.advertise<bot_msgs::BotStatus>("/robot_status", 100);
-    //add more publishers here as needed
 }
 
 void Bot_Controller::m_initialize_subscribers() {
@@ -64,20 +62,6 @@ void Bot_Controller::m_pose_callback(const nav_msgs::Odometry::ConstPtr& odom_ms
     m_location.second = odom_msg->pose.pose.position.y;
     m_orientation = odom_msg->pose.pose.orientation;
 
-    // ROS_INFO_STREAM("-------------------------");
-    // ROS_INFO_STREAM("Pose of the robot: "
-    //     << "[" << m_location.first
-    //     << ","
-    //     << m_location.second << "], [" << m_orientation.x << ","
-    //     << m_orientation.y << ","
-    //     << m_orientation.z << "," << m_orientation.w << "]");
-
-    bot_msgs::BotStatus bot_status_msg;
-    bot_status_msg.pose_data=odom_msg->pose.pose;
-    bot_status_msg.twist_data=odom_msg->twist.twist;
-    bot_status_msg.robot_name=m_robot_name;
-
-    m_bot_status_publisher.publish(bot_status_msg);
 }
 
 

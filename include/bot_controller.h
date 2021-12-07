@@ -7,8 +7,7 @@
 #include <ros/ros.h>
 #include <utility>
 #include <tf/transform_datatypes.h> //to manipulate quaternions
-// #include <actionlib/server/simple_action_server.h>
-// #include <bot_msgs/MoveBotAction.h>
+
 
 /**
  * @brief Controller class to drive a turtlebot.
@@ -39,17 +38,11 @@ public:
 
 private:
     ros::NodeHandle m_nh; // we will need this, to pass between main() and constructor
-    // NodeHandle instance must be created before this line. Otherwise strange error occurs.
-    // actionlib::SimpleActionServer<bot_msgs::MoveBotAction> m_action_server;
-    // bot_msgs::MoveBotGoal m_action_goal;
-    // bot_msgs::MoveBotFeedback m_action_feedback;
-    // bot_msgs::MoveBotResult m_action_result;
 
     // these will be set up within the class constructor, hiding these ugly details
     ros::Subscriber m_pose_subscriber;
     ros::Subscriber m_scan_subscriber;
     ros::Publisher m_velocity_publisher;
-    ros::Publisher m_bot_status_publisher;
 
     std::string m_robot_name;
 
