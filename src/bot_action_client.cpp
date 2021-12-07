@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 
     // use the name of our server, which is: example_action (named in example_action_server.cpp)
     // the "true" argument says that we want our new client to run as a separate thread (a good idea)
-    actionlib::SimpleActionClient<bot_msgs::MoveBotAction> action_client("action_server", true);
+    actionlib::SimpleActionClient<bot_msgs::MoveBotAction> action_client("bot_action", true);
 
     if (ros::param::has("~/goal_x"))
     {
@@ -49,9 +49,9 @@ int main(int argc, char **argv)
     goal.goal_y = goal_y;
     
     // attempt to connect to the server:
-    ROS_INFO("waiting for server: ");
+    ROS_INFO("waiting for server...");
     bool server_exists = action_client.waitForServer(ros::Duration(5.0)); // wait for up to 5 seconds
-    // something odd in above: does not seem to wait for 5 seconds, but returns rapidly if server not running
+    //something odd in above: does not seem to wait for 5 seconds, but returns rapidly if server not running
     //bool server_exists = action_client.waitForServer(); //wait forever
 
     if (!server_exists)
@@ -62,25 +62,10 @@ int main(int argc, char **argv)
 
     ROS_INFO("connected to action server"); // if here, then we connected to the server;
 
-    
     action_client.sendGoal(goal, &done_callback); // we could also name additional callback functions here, if desired
     //    action_client.sendGoal(goal, &doneCb, &activeCb, &feedbackCb); //e.g., like this
-    // while (action_client.getState() != actionlib::SimpleClientGoalState::SUCCEEDED)
-    // {
-        
-        bool finished_before_timeout = action_client.waitForResult(ros::Duration(120.0)); //wait 2 min
-        //bool finished_before_timeout = action_client.waitForResult(); // wait forever...
-
-        if (!finished_before_timeout)
-        {
-            ROS_WARN_STREAM("giving up waiting on result to reach goal"
-                            << "[" << goal_x << "," << goal_y << "]");
-            return 0;
-        }
-            
-    // }
-    // ROS_INFO_STREAM("Awesome, robot reached the goal!!");
-    
+    action_client.waitForResult();//wait forever
+    ROS_INFO_STREAM(action_client.getResult());
 
     return 0;
 }
