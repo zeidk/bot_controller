@@ -1,11 +1,22 @@
 #include <ros/ros.h>
 #include <actionlib/client/simple_action_client.h>
 #include <bot_msgs/MoveBotAction.h>
+#include <bot_msgs/MoveBotActionFeedback.h>
 
 void done_callback(const actionlib::SimpleClientGoalState &state,
-                   const bot_msgs::MoveBotResultConstPtr &result)
+                   const bot_msgs::MoveBotResultConstPtr &mb_result)
 {
     ROS_INFO("Action client callback: server responded with state [%s]", state.toString().c_str());
+    ROS_INFO_STREAM("Got result output: " << mb_result->result);
+}
+
+
+void feedback_callback(const bot_msgs::MoveBotFeedbackConstPtr &feedback){
+    ROS_INFO_STREAM("Feedback from Action Server: " << feedback->status);
+}
+
+void active_callback(){
+    ROS_INFO_STREAM("Goal just went active");
 }
 
 int main(int argc, char **argv)
@@ -15,8 +26,8 @@ int main(int argc, char **argv)
     double goal_y;
 
     ros::init(argc, argv, "action_client_node");
-
-    // here is a "goal" object compatible with the server, as defined in example_action_server/action
+    ros::NodeHandle nh("~");
+     // here is a "goal" object compatible with the server, as defined in example_action_server/action
     bot_msgs::MoveBotGoal goal;
 
     // use the name of our server, which is: example_action (named in example_action_server.cpp)
@@ -62,10 +73,10 @@ int main(int argc, char **argv)
 
     ROS_INFO("connected to action server"); // if here, then we connected to the server;
 
-    action_client.sendGoal(goal, &done_callback); // we could also name additional callback functions here, if desired
+    action_client.sendGoal(goal, &done_callback, &active_callback, &feedback_callback); // we could also name additional callback functions here, if desired
     //    action_client.sendGoal(goal, &doneCb, &activeCb, &feedbackCb); //e.g., like this
     action_client.waitForResult();//wait forever
-    ROS_INFO_STREAM(action_client.getResult());
+    
 
     return 0;
 }

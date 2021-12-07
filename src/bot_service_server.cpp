@@ -15,11 +15,11 @@ bool snap_picture_service_callback(bot_msgs::SnapPicture::Request &request,
 {
     ROS_INFO("Processing service request...");
 
-    std::string saved_picture = "/home/zeidkootbally/Desktop/" + (std::string) request.picture_name;
-    bool write_status = cv::imwrite(saved_picture, cv_ptr->image);
+    std::string saved_picture_path = "/home/zeidkootbally/Desktop/" + (std::string) request.picture_name;
+    bool write_status = cv::imwrite(saved_picture_path, cv_ptr->image);
     if (write_status){
         response.success = "Picture saved";
-        ROS_INFO_STREAM("Picture saved at " << saved_picture);
+        ROS_INFO_STREAM("Picture saved at: " << saved_picture_path);
     }
         
     else

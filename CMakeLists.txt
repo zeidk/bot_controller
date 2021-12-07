@@ -143,7 +143,7 @@ include
 add_executable( ${PROJECT_NAME}_node src/main.cpp src/bot_controller.cpp)
 add_executable(service_server_node src/bot_service_server.cpp)
 add_executable(service_client_node src/bot_service_client.cpp)
-add_executable(action_server_node src/bot_action_server.cpp src/bot_controller.cpp)
+add_executable(action_server_node src/bot_action_server.cpp)
 add_executable(action_client_node src/bot_action_client.cpp)
                                               
 ## Rename C++ executable without prefix
