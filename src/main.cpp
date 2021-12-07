@@ -116,20 +116,20 @@ int main(int argc, char** argv)
 
   while (ros::ok())
   {
-    if (motion_type == "h")
-      controller.stop();
-    else if (motion_type == "s")
-      controller.drive_straight(drive_value, direction_b);
-    else if (motion_type == "r")
-    {
-      if (final_angle == 0)
-        final_angle = controller.compute_expected_final_yaw(direction_b, drive_value);
-      controller.rotate(drive_value, direction_b, final_angle);
-    }
-    else if (motion_type == "g")
-    {
-      controller.go_to_goal(goal_x, goal_y);
-    }
+    // if (motion_type == "h")
+    //   controller.stop();
+    // else if (motion_type == "s")
+    //   controller.drive_straight(drive_value, direction_b);
+    // else if (motion_type == "r")
+    // {
+    //   if (final_angle == 0)
+    //     final_angle = controller.compute_expected_final_yaw(direction_b, drive_value);
+    //   controller.rotate(drive_value, direction_b, final_angle);
+    // }
+    // else if (motion_type == "g")
+    // {
+    //   controller.go_to_goal(goal_x, goal_y);
+    // }
     // command_sent = true;
     ros::spinOnce();
 

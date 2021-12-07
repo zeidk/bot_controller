@@ -7,8 +7,8 @@
 Bot_Controller::Bot_Controller(ros::NodeHandle* nodehandle, const std::string& robot_name) :
     m_robot_name{robot_name},
     m_nh{ *nodehandle },
-    m_kv{ 0.1 },
-    m_kh{ 0.1 },
+    m_kv{ 0.2 },
+    m_kh{ 0.26 },
     m_parent_frame{ "odom" },
     m_child_frame{ "base_footprint" },
     m_location{ 0,0 },
@@ -39,14 +39,14 @@ double Bot_Controller::m_normalize_angle(double angle)
 }
 
 void Bot_Controller::m_initialize_publishers() {
-    // ROS_INFO("Initializing Publishers");
+    ROS_INFO("Initializing Publishers");
     m_velocity_publisher = m_nh.advertise<geometry_msgs::Twist>("/cmd_vel", 100);
     m_bot_status_publisher =m_nh.advertise<bot_msgs::BotStatus>("/robot_status", 100);
     //add more publishers here as needed
 }
 
 void Bot_Controller::m_initialize_subscribers() {
-    // ROS_INFO("Initializing Subscribers");
+    ROS_INFO("Initializing Subscribers");
     m_pose_subscriber = m_nh.subscribe("/odom", 1000, &Bot_Controller::m_pose_callback, this);
     // m_scan_subscriber = m_nh.subscribe("/scan", 1000, &Bot_Controller::m_scan_callback, this);
     //add more subscribers as needed
@@ -62,15 +62,14 @@ void Bot_Controller::m_pose_callback(const nav_msgs::Odometry::ConstPtr& odom_ms
     m_location.first = odom_msg->pose.pose.position.x;
     m_location.second = odom_msg->pose.pose.position.y;
     m_orientation = odom_msg->pose.pose.orientation;
-    // compute_yaw();
 
-    ROS_INFO_STREAM("-------------------------");
-    ROS_INFO_STREAM("Pose of the robot: "
-        << "[" << m_location.first
-        << ","
-        << m_location.second << "], [" << m_orientation.x << ","
-        << m_orientation.y << ","
-        << m_orientation.z << "," << m_orientation.w << "]");
+    // ROS_INFO_STREAM("-------------------------");
+    // ROS_INFO_STREAM("Pose of the robot: "
+    //     << "[" << m_location.first
+    //     << ","
+    //     << m_location.second << "], [" << m_orientation.x << ","
+    //     << m_orientation.y << ","
+    //     << m_orientation.z << "," << m_orientation.w << "]");
 
     bot_msgs::BotStatus bot_status_msg;
     bot_status_msg.pose_data=odom_msg->pose.pose;
@@ -116,8 +115,8 @@ double Bot_Controller::compute_expected_final_yaw(bool direction, double angle_t
         final_angle = current_yaw_deg + angle_to_rotate;
     else
         final_angle = current_yaw_deg - angle_to_rotate;
-    ROS_INFO_STREAM("Current ANGLE: " << current_yaw_deg);
-    ROS_INFO_STREAM("Final ANGLE: " << final_angle);
+    // ROS_INFO_STREAM("Current ANGLE: " << current_yaw_deg);
+    // ROS_INFO_STREAM("Final ANGLE: " << final_angle);
     // ros::shutdown();
 
     return final_angle;
@@ -206,9 +205,11 @@ void Bot_Controller::drive_straight(double distance_to_drive, bool direction) {
     }
 }
 
-void Bot_Controller::go_to_goal(double goal_x, double goal_y) {
-    ROS_INFO_STREAM("Going to goal [" << goal_x << "," << goal_y << "]");
-    ROS_INFO_STREAM("Current location: " << m_location.first << "," << m_location.second);
+
+
+bool Bot_Controller::go_to_goal(double goal_x, double goal_y) {
+    // ROS_INFO_STREAM("Going to goal [" << goal_x << "," << goal_y << "]");
+    // ROS_INFO_STREAM("Current location: " << m_location.first << "," << m_location.second);
     std::pair<double, double> goal{ goal_x, goal_y };
     double distance_to_goal = m_compute_distance(m_location, goal);
     double linear_x{};
@@ -217,8 +218,8 @@ void Bot_Controller::go_to_goal(double goal_x, double goal_y) {
     if (distance_to_goal > 0.05) {
         distance_to_goal = m_compute_distance(m_location, goal);
         double angle_to_goal = std::atan2(goal_y - m_location.second, goal_x - m_location.first);
-        ROS_INFO_STREAM("Distance to goal: " << distance_to_goal << "m");
-        ROS_INFO_STREAM("Angle to goal: " << angle_to_goal << " rad");
+        // ROS_INFO_STREAM("Distance to goal: " << distance_to_goal << "m");
+        // ROS_INFO_STREAM("Angle to goal: " << angle_to_goal << " rad");
 
         if (angle_to_goal < 0)
             // angle_to_goal = 2 * M_PI + angle_to_goal;
@@ -248,6 +249,7 @@ void Bot_Controller::go_to_goal(double goal_x, double goal_y) {
     }
     else {
         stop();
-        ros::shutdown();
+        // ros::shutdown();
+        return true;
     }
 }

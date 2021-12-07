@@ -13,10 +13,15 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   bot_msgs
+  sensor_msgs
+  image_transport
+  cv_bridge
+  actionlib_msgs
+  actionlib
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system thread)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -107,7 +112,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES bot_controller
-#  CATKIN_DEPENDS geometry_msgs nav_msgs roscpp scan_msgs
+ CATKIN_DEPENDS actionlib_msgs
 #  DEPENDS system_lib
 )
 
@@ -136,7 +141,11 @@ include
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable( ${PROJECT_NAME}_node src/main.cpp src/bot_controller.cpp)
-
+add_executable(service_server_node src/bot_service_server.cpp)
+add_executable(service_client_node src/bot_service_client.cpp)
+add_executable(action_server_node src/bot_action_server.cpp src/bot_controller.cpp)
+add_executable(action_client_node src/bot_action_client.cpp)
+                                              
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -151,7 +160,21 @@ add_executable( ${PROJECT_NAME}_node src/main.cpp src/bot_controller.cpp)
 target_link_libraries(${PROJECT_NAME}_node
   ${catkin_LIBRARIES}
 )
+target_link_libraries(service_server_node
+  ${catkin_LIBRARIES}
+)
 
+target_link_libraries(service_client_node
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(action_server_node
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(action_client_node
+  ${catkin_LIBRARIES}
+)
 #############
 ## Install ##
 #############
