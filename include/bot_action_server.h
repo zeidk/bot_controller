@@ -42,7 +42,7 @@ private:
     void m_move(double linear, double angular);
     double m_normalize_angle_positive(double angle);
     double m_normalize_angle(double angle);
-    
+
     // NodeHandle instance must be created before this line. Otherwise strange error occurs.
     actionlib::SimpleActionServer<bot_msgs::MoveBotAction> m_action_server;
     std::string m_action_name;

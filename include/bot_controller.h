@@ -43,6 +43,7 @@ private:
     ros::Subscriber m_pose_subscriber;
     ros::Subscriber m_scan_subscriber;
     ros::Publisher m_velocity_publisher;
+    ros::Publisher m_bot_status_publisher;
 
     std::string m_robot_name;
 

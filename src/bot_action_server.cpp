@@ -2,17 +2,18 @@
 #include <bot_msgs/MoveBotActionFeedback.h>
 
 //constructor
-BotActionServer::BotActionServer(ros::NodeHandle *nodehandle, std::string action_name, std::string robot_name) : m_nh{*nodehandle},
-                                                                                                                 m_robot_name{robot_name},
-                                                                                                                 m_kv{0.2},
-                                                                                                                 m_kh{0.26},
-                                                                                                                 m_location{0, 0},
-                                                                                                                 m_linear_speed{0.7},
-                                                                                                                 m_angular_speed{0.6},
-                                                                                                                 m_roll{0},
-                                                                                                                 m_pitch{0},
-                                                                                                                 m_yaw{0},
-                                                                                                                 m_action_server(m_nh, action_name, boost::bind(&BotActionServer::action_server_callback, this, _1), false)
+BotActionServer::BotActionServer(ros::NodeHandle* nodehandle, std::string action_name, std::string robot_name) :
+    m_nh{ *nodehandle },
+    m_robot_name{ robot_name },
+    m_kv{ 0.2 },
+    m_kh{ 0.26 },
+    m_location{ 0, 0 },
+    m_linear_speed{ 0.7 },
+    m_angular_speed{ 0.6 },
+    m_roll{ 0 },
+    m_pitch{ 0 },
+    m_yaw{ 0 },
+    m_action_server(m_nh, action_name, boost::bind(&BotActionServer::action_server_callback, this, _1), false)
 {
     m_initialize_subscribers();
     m_initialize_publishers();
@@ -46,10 +47,6 @@ void BotActionServer::m_initialize_publishers()
     m_feedback_publisher = m_nh.advertise<bot_msgs::MoveBotActionFeedback>("bot_action/feedback", 100);
     //add more publishers here as needed
 }
-
-// double BotActionServer::convert_rad_to_deg(double angle) {
-//     return (angle * M_PI / 180.0);
-// }
 
 void BotActionServer::m_pose_callback(const nav_msgs::Odometry::ConstPtr &odom_msg)
 {
@@ -98,8 +95,7 @@ double BotActionServer::compute_yaw_rad()
     return yaw_rad;
 }
 
-
-void BotActionServer::action_server_callback(const actionlib::SimpleActionServer<bot_msgs::MoveBotAction>::GoalConstPtr &goal)
+void BotActionServer::action_server_callback(const actionlib::SimpleActionServer<bot_msgs::MoveBotAction>::GoalConstPtr& goal)
 {
     double linear_x{};
     double angular_z{};
@@ -123,7 +119,6 @@ void BotActionServer::action_server_callback(const actionlib::SimpleActionServer
         {
             distance_to_goal = m_compute_distance(m_location.first, m_location.second, goal->goal_x, goal->goal_y);
             m_action_feedback.status = "Robot is " + std::to_string(distance_to_goal) + " m away from goal";
-            // ROS_INFO_STREAM("Robot is " << std::to_string(distance_to_goal) << " m away from goal");
             m_action_server.publishFeedback(m_action_feedback);
 
             double angle_to_goal = std::atan2(goal->goal_y - m_location.second, goal->goal_x - m_location.first);
@@ -162,7 +157,6 @@ void BotActionServer::action_server_callback(const actionlib::SimpleActionServer
             stop();
             break;
         }
-        
     }
 }
 
@@ -171,8 +165,9 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "as_node");
     ros::NodeHandle nh;
     BotActionServer bot_action_server(&nh, "bot_action", "waffle");
-    // ros::spin();
+    ros::spin();
 
-    while (ros::ok())
-        ros::spinOnce();
+    // //or
+    // while (ros::ok())
+    //     ros::spinOnce();
 }

@@ -9,61 +9,34 @@ void print_usage(std::string error)
 {
   if (!error.empty())  // if not empty string
     ROS_ERROR_STREAM(error << "\n");
-  // ROS_INFO_STREAM("\nusage: rosrun bot_controller bot_controller_node [-d/-r/-s/-g] [<values>] [-f/-b]\n"
-  //                 << "  -d: drive straight\n"
-  //                 << "  -r: rotate\n"
-  //                 << "  -s : stop the robot\n"
-  //                 << "  -g : go to goal\n"
-  //                 << "  <values>: numeric value(s) (double):\n"
-  //                 << "        - distance to drive (m): Only 1 numeric value must be provided\n"
-  //                 << "        - relative angle to rotate (deg): Only 1 numeric value must be provided\n"
-  //                 << "        - position to reach: 2 numeric values must be provided (x and y)\n"
-  //                 << "  -f: drive forward or positive rotation (works only with -s and -r)\n"
-  //                 << "  -b: drive backward or negative rotation (works only with -s and -r)\n"
-  //                 << "  -h: print this screen\n");
-
   ros::shutdown();
 }
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "my_controller");
+  ros::init(argc, argv, "bot_controller_node");
   ros::NodeHandle nh("~");
 
   std::string robot_name;
   if (nh.hasParam("robot_name")) {
     nh.getParam("robot_name", robot_name);
     ROS_INFO_STREAM("robot name: " << robot_name);
-    // ros::shutdown();
   }
   else {
     print_usage("missing argument: _robot_name:= <name>");
-    ros::shutdown();
   }
-  
-  
-  // if (!ros::param::has("~/robot_name"))
-  // {
-  //   print_usage("robot name missing: _robot_name:=<robot_name>");
-  // }
-  // else
-  // {
-  //   ros::param::get("~/robot_name", robot_name);
-  // }
 
+  //initialize Bot_Controller object
   Bot_Controller controller(&nh, robot_name);
 
   std::string motion_type;
   if (nh.hasParam("motion"))
   {
     nh.getParam("motion", motion_type);
-    ROS_INFO_STREAM("Motion Type: " << motion_type);
-    // ros::shutdown();
   }
   else
   {
     print_usage("missing argument: _motion:= <s/r/g/h>");
-    ros::shutdown();
   }
 
   double drive_value;
@@ -79,7 +52,6 @@ int main(int argc, char** argv)
     else
     {
       print_usage("_value:= <double>");
-      ros::shutdown();
     }
 
     if (nh.hasParam("direction"))
@@ -92,13 +64,11 @@ int main(int argc, char** argv)
       else
       {
         print_usage("_direction:=<f/b>");
-        ros::shutdown();
       }
     }
     else
     {
       print_usage("_direction:= <f/b>");
-      ros::shutdown();
     }
   }
 

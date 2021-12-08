@@ -12,7 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   nav_msgs
   roscpp
   sensor_msgs
-  # bot_msgs
+  bot_msgs
   sensor_msgs
   image_transport
   cv_bridge
@@ -110,9 +110,9 @@ find_package(Boost REQUIRED COMPONENTS system thread)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
+ INCLUDE_DIRS include
 #  LIBRARIES bot_controller
- CATKIN_DEPENDS actionlib_msgs
+ CATKIN_DEPENDS actionlib_msgs bot_msgs
 #  DEPENDS system_lib
 )
 
@@ -140,11 +140,11 @@ include
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable( ${PROJECT_NAME}_node src/main.cpp src/bot_controller.cpp)
-# add_executable(service_server_node src/bot_service_server.cpp)
-# add_executable(service_client_node src/bot_service_client.cpp)
-# add_executable(action_server_node src/bot_action_server.cpp)
-# add_executable(action_client_node src/bot_action_client.cpp)
+add_executable( ${PROJECT_NAME}_exe src/main.cpp src/bot_controller.cpp)
+# add_executable(service_server_exe src/bot_service_server.cpp)
+# add_executable(service_client_exe src/bot_service_client.cpp)
+# add_executable(action_server_exe src/bot_action_server.cpp)
+# add_executable(action_client_exe src/bot_action_client.cpp)
                                               
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -157,22 +157,22 @@ add_executable( ${PROJECT_NAME}_node src/main.cpp src/bot_controller.cpp)
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME}_node
+target_link_libraries(${PROJECT_NAME}_exe
   ${catkin_LIBRARIES}
 )
-# target_link_libraries(service_server_node
+# target_link_libraries(service_server_exe
 #   ${catkin_LIBRARIES}
 # )
 
-# target_link_libraries(service_client_node
+# target_link_libraries(service_client_exe
 #   ${catkin_LIBRARIES}
 # )
 
-# target_link_libraries(action_server_node
+# target_link_libraries(action_server_exe
 #   ${catkin_LIBRARIES}
 # )
 
-# target_link_libraries(action_client_node
+# target_link_libraries(action_client_exe
 #   ${catkin_LIBRARIES}
 # )
 #############

@@ -21,7 +21,6 @@ void active_callback(){
 
 int main(int argc, char **argv)
 {
-
     double goal_x;
     double goal_y;
 
@@ -34,9 +33,9 @@ int main(int argc, char **argv)
     // the "true" argument says that we want our new client to run as a separate thread (a good idea)
     actionlib::SimpleActionClient<bot_msgs::MoveBotAction> action_client("bot_action", true);
 
-    if (ros::param::has("~/goal_x"))
+    if (nh.hasParam("goal_x"))
     {
-        ros::param::get("~/goal_x", goal_x);
+        nh.getParam("goal_x", goal_x);
     }
     else
     {
@@ -45,9 +44,9 @@ int main(int argc, char **argv)
         return 0; 
     }
 
-    if (ros::param::has("~/goal_y"))
+    if (nh.hasParam("goal_y"))
     {
-        ros::param::get("~/goal_y", goal_y);
+        nh.getParam("goal_y", goal_y);
     }
     else
     {
@@ -76,7 +75,6 @@ int main(int argc, char **argv)
     action_client.sendGoal(goal, &done_callback, &active_callback, &feedback_callback); // we could also name additional callback functions here, if desired
     //    action_client.sendGoal(goal, &doneCb, &activeCb, &feedbackCb); //e.g., like this
     action_client.waitForResult();//wait forever
-    
 
     return 0;
 }

@@ -15,7 +15,7 @@ bool snap_picture_service_callback(bot_msgs::SnapPicture::Request &request,
 {
     ROS_INFO("Processing service request...");
 
-    std::string saved_picture_path = "/home/zeidkootbally/Desktop/" + (std::string) request.picture_name;
+    std::string saved_picture_path = "/tmp/" + (std::string) request.picture_name;
     bool write_status = cv::imwrite(saved_picture_path, cv_ptr->image);
     if (write_status){
         response.success = "Picture saved";
@@ -35,7 +35,7 @@ void camera_image_topic_callback(const sensor_msgs::Image::ConstPtr &img_msg)
     }
     catch (cv_bridge::Exception &e)
     {
-        ROS_ERROR("cv_bridge exception: %s", e.what());
+        ROS_ERROR_STREAM("cv_bridge exception: " << e.what());
         return;
     }
 }
@@ -44,7 +44,6 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, "snap_picture_server");
     ros::NodeHandle nh;
-
     ros::Subscriber camera_topic_sub = nh.subscribe("/camera/rgb/image_raw", 1000, &camera_image_topic_callback);
     ros::ServiceServer service = nh.advertiseService("snap_picture", snap_picture_service_callback);
     ROS_INFO("Ready to snap pictures from robot's camera.");
